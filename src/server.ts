@@ -3,9 +3,10 @@ import routes from "./routes";
 import bodyParser from "body-parser";
 import "dotenv/config";
 import { App, createNodeMiddleware } from "@octokit/app";
-// import {  } from "octokit/webhooks";
 import fs from "fs";
 import { Octokit } from "octokit";
+import { handlePullRequestOpened, handleCommentCreated, handlePullRequestClosed, handleReviewerAssigned, handlePullRequestReviewed } from "./gitApi";
+
 
 // App
 const app = express();
@@ -38,34 +39,22 @@ const octokitApp = new App({
 });
 
 const { data } = await octokitApp.octokit.request('/app')
-const messageForNewPRs = "Thanks for opening a new PR! Please follow our contributing guidelines to make your PR easier to review.";
 
-async function handlePullRequestOpened({octokit, payload}) {
-  console.log(`Received a pull request event for #${payload.pull_request.number}`);
-  
-
-  try {
-    await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
-      owner: payload.repository.owner.login,
-      repo: payload.repository.name,
-      issue_number: payload.pull_request.number,
-      body: messageForNewPRs,
-      headers: {
-        "x-github-api-version": "2022-11-28",
-      },
-    });
-  } catch (error) {
-    if (error.response) {
-      console.error(`Error! Status: ${error.response.status}. Message: ${error.response.data.message}`)
-    }
-    console.error(error)
-  }
-};
-
+// pr opened
 octokitApp.webhooks.on("pull_request.opened", handlePullRequestOpened)
 octokitApp.webhooks.on("pull_request.reopened", handlePullRequestOpened)
+// assigned a reviewer
+octokitApp.webhooks.on("pull_request.review_requested", handleReviewerAssigned)
+// commented
+octokitApp.webhooks.on("pull_request_review_comment.created", handleCommentCreated)
+octokitApp.webhooks.on("issue_comment.created", handleCommentCreated)
+// reviewed
+octokitApp.webhooks.on("pull_request_review.submitted", handlePullRequestReviewed)
+// pr closed
+octokitApp.webhooks.on("pull_request.closed", handlePullRequestClosed)
+// other event
 octokitApp.webhooks.onAny((event) => {
-  console.log(event)
+  console.log('received event:', event.name)
 })
 
 app.use(
