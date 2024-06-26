@@ -1,5 +1,6 @@
 import { Octokit } from "@octokit/core";
 import { readDefect } from "./rallyApi";
+import { triggerEvent } from "./noveApi";
 
 const stateMap = {
   0: {
