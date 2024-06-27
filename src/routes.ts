@@ -4,10 +4,15 @@ import { verifyWebhookSignature } from "@hookdeck/sdk/webhooks/helpers";
 import qs from "querystring";
 import { IncomingHttpHeaders } from "http";
 import { Request as ExpressRequest } from "express";
+import { updateRally } from "./rallyApi";
+import { triggerEvent } from "./novuApi";
+import { user2IdMap } from "./constant";
+import bodyParser from "body-parser";
 
 const SECRET: string = import.meta.env.VITE_HOOKDECK_SIGNING_SECRET || "1234abcd";
 
 const router = express.Router();
+router.use(bodyParser.json());
 
 // interface RequestWithRawBody extends ExpressRequest {
 //   rawBody: Buffer;
@@ -62,6 +67,31 @@ const verifyHookdeckSignature = async (
 router.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the Webhooks API");
 });
+
+router.post("/event", (req: Request, res: Response) => {
+  console.log('-----------------')
+  if (req.body.event === 'rally') {
+    updateRally()
+  } else if (req.body.event === 'newpost') {
+    // boardcast to all users
+    for (let user in user2IdMap) {
+      triggerEvent('new_post', user, {
+        title: req.body.title,
+        content: req.body.content,
+      })
+    }
+  } else if (req.body.event === 'merge') {
+    // repost merge event to user
+    triggerEvent('pull_request_ready_to_merge', req.body.owner, {
+      title: req.body.title,
+      content: req.body.content,
+    })
+  }
+  res.send("Received");
+  console.log(`request body: ${req.body}`)
+  console.log('-----------------')
+});
+
 
 // TEST
 router.post(

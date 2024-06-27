@@ -90,14 +90,19 @@ const updateScheduleStatus = async () => {
     })
 }
 
-const __test__ = false
-if (__test__) {
-    const res = await readDefect()
-    const owner = res.Owner._ref // https://rally1.rallydev.com/slm/webservice/v2.0/user/28129188684
-    updateOwner(res.includes(process.env.RALLY_SE_REF) ? process.env.RALLY_QE_REF : process.env.RALLY_SE_REF)
+const updateRally = async () => {
+  const res = await readDefect()
+  const owner = res.Owner._ref // https://rally1.rallydev.com/slm/webservice/v2.0/user/28129188684
+  updateOwner(owner.includes(process.env.RALLY_SE_REF) ? process.env.RALLY_QE_REF : process.env.RALLY_SE_REF)
 
-    const status = res.Ready
-    updateStatus(!status)
+  const status = res.Ready
+  updateStatus(!status)
 }
 
-export {readDefect, updateOwner, updateStatus};
+
+const __test__ = false
+if (__test__) {
+    update()
+}
+
+export {readDefect, updateOwner, updateStatus, updateRally};

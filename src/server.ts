@@ -12,6 +12,7 @@ import { handlePullRequestOpened, handleCommentCreated, handlePullRequestClosed,
 const app = express();
 const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_PATH, "utf8");
 
+
 app.use(
   bodyParser.json({
     verify: (req, res, buf) => {
@@ -66,7 +67,7 @@ const port: string | number = process.env.PORT || "1337";
 app.set("port", port);
 app.set("path", process.env.PATH || "/webhooks");
 
-// app.use("/", routes);
+app.use("/", routes);
 
 // Server
 app.listen(port, () => console.log(`Server running on localhost:${port}`));
