@@ -63,21 +63,24 @@ async function handleReviewerAssigned({octokit, payload}) {
   
   // Update the timestamp of the last handled request
   lastHandledTimestamp = currentTime;
-  const reviewer = payload.pull_request.requested_reviewers.slice(-1)[0].login;
+  const reviewers = payload.pull_request.requested_reviewers;
   const html_url = payload.pull_request.html_url;
   const owner = payload.repository.owner.login;
   // send msg to reviewer
-  triggerEvent('pull_request_reviewer', reviewer, {
-    type: 'review',
-    url: html_url,
-    from: payload.pull_request.user.login || payload.repository.owner.login,
-    to: reviewer,
-    title: `Review Request from ${owner}`,
-    content: getContent(payload)
-  })
+  for (let user in reviewers) {
+    const reviewer = reviewers[user].login;
+    triggerEvent('pull_request_reviewer', reviewer, {
+      type: 'review',
+      url: html_url,
+      from: payload.pull_request.user.login || payload.repository.owner.login,
+      to: reviewer,
+      title: `Review Request from ${owner}`,
+      content: getContent(payload)
+    })
+  }
   console.log('---------------')
   console.log(`Received a pull request event for #${getNumber(payload)}`)
-  console.log('Reviewer assigned:', reviewer)
+  console.log('Reviewer assigned:', reviewers)
   console.log('PR URL:', html_url)
   console.log('---------------')
 }

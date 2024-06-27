@@ -6,7 +6,7 @@ import { IncomingHttpHeaders } from "http";
 import { Request as ExpressRequest } from "express";
 import { updateRally, updateRally2 } from "./rallyApi";
 import { triggerEvent } from "./novuApi";
-import { user2IdMap } from "./constant";
+import { Name2UserMap, user2IdMap } from "./constant";
 import bodyParser from "body-parser";
 
 const SECRET: string = import.meta.env.VITE_HOOKDECK_SIGNING_SECRET || "1234abcd";
@@ -87,8 +87,11 @@ router.post("/event", (req: Request, res: Response) => {
     }
   } else if (req.body.event === 'merge') {
     // repost merge event to user. Hard coded/
-    triggerEvent('pull_request_ready_to_merge', req.body.owner, {
-      title: `Merge Request from En Li`,
+    const user = Name2UserMap[req.body.owner];
+    triggerEvent('pull_request_ready_to_merge', user, {
+      type: 'merge',
+      title: `Merge Request from Haocan Xu`,
+      // TODO: update pr number
       content: req.body.content ?? 'PR #7: DE299101; update gitignore',
     })
   }

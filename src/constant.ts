@@ -21,9 +21,15 @@ export const user2NameMap = {
     'oliveshell': 'Haocan Xu',
 }
 
+export const Name2UserMap = {
+    'En Li': 'leen1218',
+    'Kai Wang': 'burningdevil',
+    'Haocan Xu': 'oliveshell',
+}
+
 export const convertNames = (content) => {
     for (const [key, value] of Object.entries(user2NameMap)) {
-        content = content.replace(new RegExp(`@${key}`, 'g'), `@${value}`);
+        content = content.replace(new RegExp(`${key}`, 'g'), `${value}`);
     }
     return content;
 }
