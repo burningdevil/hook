@@ -1,5 +1,5 @@
 // 2 id in novu subscriber
-const __test__ = true;
+export const __test__ = false;
 
 export const user2IdMap = __test__ ? {
     'leen1218': '66758d34c4e1f89f2645d53d',

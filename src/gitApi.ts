@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/core";
 import { updateRally } from "./rallyApi";
 import { triggerEvent } from "./novuApi";
-
+import { __test__ } from "./constant";
 
 const initInfo = {
   reviewers: 0,
@@ -187,7 +187,6 @@ async function handlePullRequestReviewed({octokit, payload}) {
         content: getContent(payload),
       })
     } else {
-      const __test__ = false;
       if (__test__) {
         triggerEvent('pull_request_reviewed', owner, {
           type: 'approved',
