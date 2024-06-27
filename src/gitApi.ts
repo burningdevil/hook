@@ -21,6 +21,10 @@ const getNumber = (payload) => {
   return payload.pull_request?.number ?? 0
 }
 
+const getContent = (payload) => {
+  return `PR #${getNumber(payload)}: ${payload.pull_request.title}`
+}
+
 async function handlePullRequestOpened({octokit, payload}) {
   console.log(`Received a pull request event for #${getNumber(payload)}`);
   const messageForNewPRs = "Thanks for opening a new PR! Please follow our contributing guidelines to make your PR easier to review.";
@@ -61,14 +65,15 @@ async function handleReviewerAssigned({octokit, payload}) {
   lastHandledTimestamp = currentTime;
   const reviewer = payload.pull_request.requested_reviewers.slice(-1)[0].login;
   const html_url = payload.pull_request.html_url;
+  const owner = payload.repository.owner.login;
   // send msg to reviewer
   triggerEvent('pull_request_reviewer', reviewer, {
     type: 'review',
     url: html_url,
     from: payload.pull_request.user.login || payload.repository.owner.login,
     to: reviewer,
-    title: `PR #${getNumber(payload)} Assigned`,
-    content: `You have been assigned as a reviewer for this PR. Please review it as soon as possible.`
+    title: `Review Request from ${owner}`,
+    content: getContent(payload)
   })
   console.log('---------------')
   console.log(`Received a pull request event for #${getNumber(payload)}`)
@@ -143,8 +148,8 @@ async function handlePullRequestClosed({octokit, payload}) {
     from: payload.pull_request.user.login || payload.repository.owner.login,
     to: payload.pull_request.user.login,
     url: payload.repository.html_url,
-    title: `PR #${getNumber(payload)} ${isMerge ? 'Merged' : 'Closed'}`,
-    content: `Your PR has been ${isMerge ? 'merged' : 'closed'} by ${payload.sender.login}.\r\n Will you update the Rally ${process.env.RALLY_OBJECT_NAME} Status?`,
+    // title: `Merge Request from ${mergedBy}`,
+    content: `Your PR has been ${isMerge ? 'merged' : 'closed'} by ${payload.sender.login}.\r\n It is associated with ${process.env.RALLY_OBJECT_NAME} which is ready for update`,
   })
   // updateRally()
 
@@ -178,17 +183,20 @@ async function handlePullRequestReviewed({octokit, payload}) {
         type: 'approved',
         from: reviewer,
         to: owner,
-        title: `PR #${getNumber(payload)} Ready to merge.`,
-        content: `Your PR has been apprvoed by ${reviewer} and ready to merge.`,
+        title: `Your PR is ready for merge.`,
+        content: getContent(payload),
       })
     } else {
-      triggerEvent('pull_request_reviewed', owner, {
-        type: 'approved',
-        from: reviewer,
-        to: owner,
-        title: `PR #${getNumber(payload)} Approved.`,
-        content: `Your PR has been apprvoed by ${reviewer}.`,
-      })
+      const __test__ = false;
+      if (__test__) {
+        triggerEvent('pull_request_reviewed', owner, {
+          type: 'approved',
+          from: reviewer,
+          to: owner,
+          title: `PR #${getNumber(payload)} Approved.`,
+          content: getContent(payload),
+        })
+      }
     }
   }
 

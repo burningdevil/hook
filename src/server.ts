@@ -5,11 +5,13 @@ import "dotenv/config";
 import { App, createNodeMiddleware } from "@octokit/app";
 import fs from "fs";
 import { Octokit } from "octokit";
+import cors from "cors";
 import { handlePullRequestOpened, handleCommentCreated, handlePullRequestClosed, handleReviewerAssigned, handlePullRequestReviewed } from "./gitApi";
 
 
 // App
 const app = express();
+app.use(cors());
 const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_PATH, "utf8");
 
 

@@ -4,7 +4,7 @@ import { verifyWebhookSignature } from "@hookdeck/sdk/webhooks/helpers";
 import qs from "querystring";
 import { IncomingHttpHeaders } from "http";
 import { Request as ExpressRequest } from "express";
-import { updateRally } from "./rallyApi";
+import { updateRally, updateRally2 } from "./rallyApi";
 import { triggerEvent } from "./novuApi";
 import { user2IdMap } from "./constant";
 import bodyParser from "body-parser";
@@ -68,23 +68,28 @@ router.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the Webhooks API");
 });
 
+
 router.post("/event", (req: Request, res: Response) => {
   console.log('-----------------')
   if (req.body.event === 'rally') {
-    updateRally()
+    if (req.body.type === 'setReady') {
+      updateRally2()
+    } else {
+      updateRally()
+    }
   } else if (req.body.event === 'newpost') {
     // boardcast to all users
     for (let user in user2IdMap) {
       triggerEvent('new_post', user, {
-        title: req.body.title,
-        content: req.body.content,
+        title: req.body.title ?? 'title',
+        content: req.body.content ?? 'content',
       })
     }
   } else if (req.body.event === 'merge') {
-    // repost merge event to user
+    // repost merge event to user. Hard coded/
     triggerEvent('pull_request_ready_to_merge', req.body.owner, {
-      title: req.body.title,
-      content: req.body.content,
+      title: `Merge Request from En Li`,
+      content: req.body.content ?? 'PR #7: DE299101; update gitignore',
     })
   }
   res.send("Received");

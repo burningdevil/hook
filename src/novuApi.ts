@@ -18,7 +18,8 @@ export const triggerEvent = async (event, to, payload) => {
             },
             payload: {
                 ...payload,
-                content: convertNames(payload.content)
+                content: convertNames(payload.content ?? ''),
+                title: convertNames(payload.title ?? '')
             }
         })
         console.log('-----------')

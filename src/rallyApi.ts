@@ -94,10 +94,13 @@ const updateRally = async () => {
   const res = await readDefect()
   const owner = res.Owner._ref // https://rally1.rallydev.com/slm/webservice/v2.0/user/28129188684
   updateOwner(owner.includes(process.env.RALLY_SE_REF) ? process.env.RALLY_QE_REF : process.env.RALLY_SE_REF)
+}
 
+const updateRally2 = async () => {
+  const res = await readDefect()
   const status = res.Ready
   updateStatus(!status)
 }
 
 
-export {readDefect, updateOwner, updateStatus, updateRally};
+export {readDefect, updateOwner, updateStatus, updateRally, updateRally2};

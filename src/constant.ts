@@ -11,6 +11,7 @@ export const user2IdMap = __test__ ? {
     'oliveshell': 'xhcid',
     'lindu': 'linduid',
     'wjiang': 'weijiangid',
+    'admin': '66758d34c4e1f89f2645d53d'
 }
 
 // 2 name in novu name, covert the content
