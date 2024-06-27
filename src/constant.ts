@@ -1,21 +1,23 @@
 // 2 id in novu subscriber
-export const user2IdMap = {
+const __test__ = true;
+
+export const user2IdMap = __test__ ? {
     'leen1218': '66758d34c4e1f89f2645d53d',
     'burningdevil': '66758d34c4e1f89f2645d53d',
-    'haocan': '66758d34c4e1f89f2645d53d',
-}
-
-export const user2IdMap2 = {
+    'oliveshell': '66758d34c4e1f89f2645d53d',
+} : {
     'leen1218': 'enliid',
     'burningdevil': 'kaiwangid',
-    'haocan': 'xhcid',
+    'oliveshell': 'xhcid',
+    'lindu': 'linduid',
+    'wjiang': 'weijiangid',
 }
 
 // 2 name in novu name, covert the content
 export const user2NameMap = {
-    'leen1218': 'en li',
-    'burningdevil': 'kai wang',
-    'haocan': 'haocan xu',
+    'leen1218': 'En Li',
+    'burningdevil': 'Kai Wang',
+    'oliveshell': 'Haocan Xu',
 }
 
 export const convertNames = (content) => {

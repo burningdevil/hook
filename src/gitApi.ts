@@ -2,13 +2,19 @@ import { Octokit } from "@octokit/core";
 import { updateRally } from "./rallyApi";
 import { triggerEvent } from "./novuApi";
 
-const stateMap = {
-  0: {
-    reviewers: 0,
-    state: 'pending',
-    owner: '',
-  },
+
+const initInfo = {
+  reviewers: 0,
+  state: 'pending',
+  owner: '',
 }
+const stateMap = {
+}
+
+for (let i=0; i<100; i++) {
+  stateMap[i] = initInfo
+}
+
 let lastHandledTimestamp = 0;
  
 const getNumber = (payload) => {
@@ -176,13 +182,13 @@ async function handlePullRequestReviewed({octokit, payload}) {
         content: `Your PR has been apprvoed by ${reviewer} and ready to merge.`,
       })
     } else {
-      // triggerEvent('pull_request_reviewed', owner, {
-      //   type: 'approved',
-      //   from: reviewer,
-      //   to: owner,
-      //   title: `PR #${getNumber(payload)} Approved.`,
-      //   content: `Your PR has been apprvoed by ${reviewer}.`,
-      // })
+      triggerEvent('pull_request_reviewed', owner, {
+        type: 'approved',
+        from: reviewer,
+        to: owner,
+        title: `PR #${getNumber(payload)} Approved.`,
+        content: `Your PR has been apprvoed by ${reviewer}.`,
+      })
     }
   }
 

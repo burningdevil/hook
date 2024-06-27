@@ -100,9 +100,4 @@ const updateRally = async () => {
 }
 
 
-const __test__ = false
-if (__test__) {
-    update()
-}
-
 export {readDefect, updateOwner, updateStatus, updateRally};
