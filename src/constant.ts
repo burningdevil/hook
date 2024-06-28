@@ -7,8 +7,11 @@ export const user2IdMap = __test__ ? {
     'oliveshell': '66758d34c4e1f89f2645d53d',
 } : {
     'leen1218': 'enliid',
+    'En Li': 'enliid',
     'burningdevil': 'kaiwangid',
+    'Kai Wang': 'kaiwangid',
     'oliveshell': 'xhcid',
+    'Haocan Xu': 'xhcid',
     'lindu': 'linduid',
     'wjiang': 'weijiangid',
     'admin': '66758d34c4e1f89f2645d53d'
@@ -19,12 +22,6 @@ export const user2NameMap = {
     'leen1218': 'En Li',
     'burningdevil': 'Kai Wang',
     'oliveshell': 'Haocan Xu',
-}
-
-export const Name2UserMap = {
-    'En Li': 'leen1218',
-    'Kai Wang': 'burningdevil',
-    'Haocan Xu': 'oliveshell',
 }
 
 export const convertNames = (content) => {
